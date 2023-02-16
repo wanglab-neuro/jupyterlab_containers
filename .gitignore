@@ -1,3 +1,7 @@
+# test directories
+jlab_test/
+jlab_dlc/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
