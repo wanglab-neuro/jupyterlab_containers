@@ -46,30 +46,31 @@ RUN conda config --set channel_priority flexible && \
 # Create environments
 RUN \
 # Matlab kernel 
-conda env create -f packages/jmatlab_env.yml && \
+conda env create -f packages/jmatlab_env.yml 
+# && \
 # AllenSDK environnement
-conda env create -f packages/allensdk_env.yml && \
-# NWB/Datajoint environnement
-conda env create -f packages/nwb_datajoint_env.yml 
+RUN conda env create -f packages/allensdk_env.yml 
+# && \
+# NWB/Datajoint environnement -> change to spyglass? 
+# RUN conda env create -f packages/nwb_datajoint_env.yml 
 
 # Make kernels available
 SHELL ["conda","run","-n","jmatlab","/bin/bash","-c"]
-RUN conda install --quiet --yes ipykernel && \
-    python -m ipykernel install --user --name jmatlab --display-name "Matlab" && \
+RUN python -m ipykernel install --user --name jmatlab --display-name "Matlab" && \
     pip install -U -r packages/jmatlab_requirements.txt && \
     cd /usr/local/MATLAB/R2021b/extern/engines/python && \
     python setup.py install
 
 SHELL ["conda","run","-n","allensdk","/bin/bash","-c"]
-RUN conda install --quiet --yes ipykernel && \
-    python -m ipykernel install --user --name allensdk --display-name "AllenSDK" && \
+RUN python -m ipykernel install --user --name allensdk --display-name "AllenSDK" && \
     pip install -U -r packages/allensdk_requirements.txt
 
-#SHELL ["conda","run","-n","nwb_datajoint","/bin/bash","-c"]
-RUN conda install --quiet --yes ipykernel && \
-    python -m ipykernel install --user --name nwb_datajoint --display-name "NWB Datajoint" && \
-    pip install -U -r packages/nwb_datajoint_requirements.txt
+# SHELL ["conda","run","-n","nwb_datajoint","/bin/bash","-c"]
+# RUN conda install --quiet --yes ipykernel && \
+#     python -m ipykernel install --user --name nwb_datajoint --display-name "NWB Datajoint" && \
+#     pip install -U -r packages/nwb_datajoint_requirements.txt
 
+SHELL ["conda","run","-n","base","/bin/bash","-c"]
 RUN rm -rf packages
 
 # Make sure to switch back to user (avoid running ui containers as root)

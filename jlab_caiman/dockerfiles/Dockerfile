@@ -11,6 +11,7 @@ USER root
 RUN apt update && \
     apt install -y --no-install-recommends \
     sshfs \
+    nano \
     fonts-dejavu && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -26,9 +27,9 @@ RUN usermod -aG jhub_users ${NB_USER}
 USER $NB_UID
 
 # Conda installs
-# update Anaconda and install pip 
-RUN conda update -y conda && \
-     conda install -y pip bokeh
+# update Anaconda and install pip and bokeh
+RUN conda update -y conda 
+RUN conda install -y pip bokeh
 
 RUN conda config --set channel_priority flexible && \
     conda install -y -c conda-forge \
@@ -43,11 +44,13 @@ RUN conda config --set channel_priority strict && \
     jupyterlab_execute_time && \
     conda clean -tipy
 
-RUN mamba create -n caiman -c conda-forge caiman
+RUN mamba create -y -n caiman -c conda-forge mesmerize-core
+# caiman is a dependency of mesmerize-core
 SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
-RUN conda install --quiet --yes ipykernel && \
-    python -m ipykernel install --user --name caiman --display-name "CaImAn"
+RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
 RUN caimanmanager.py install
+RUN pip install fastplotlib
+
 WORKDIR /home/$NB_USER
 USER root
 RUN cp -R caiman_data /media/caiman_data && \

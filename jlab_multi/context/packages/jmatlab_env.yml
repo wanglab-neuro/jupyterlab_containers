@@ -1,5 +1,6 @@
 name: jmatlab
 dependencies:
   - python=3.9
+  - setuptools=60.9.0
   - jupyter
   - ipykernel
