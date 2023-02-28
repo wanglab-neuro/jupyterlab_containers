@@ -11,6 +11,8 @@ USER root
 RUN apt update && \
     apt install -y --no-install-recommends \
     sshfs \
+    mesa-vulkan-drivers \
+    libjpeg-turbo8 \
     nano \
     fonts-dejavu && \
     apt-get clean && \
@@ -52,10 +54,26 @@ RUN caimanmanager.py install
 RUN pip install fastplotlib
 
 WORKDIR /home/$NB_USER
+# Clone source repos 
+RUN mkdir source && cd source && \
+git clone https://github.com/flatironinstitute/CaImAn.git && \
+git clone https://github.com/nel-lab/mesmerize-core.git && \
+git clone https://github.com/kushalkolar/fastplotlib.git
+
+# The section below is a workaround to make those directories available 
+# to jupyterhub users, in the case where they do not control 
+# if a volume is mounted to the home directory (and WORKDIR superseded)
 USER root
 RUN cp -R caiman_data /media/caiman_data && \
-    fix-permissions /media/caiman_data
+    fix-permissions /media/caiman_data && \
+    cp -R source/CaImAn /media/CaImAn && \
+    fix-permissions /media/CaImAn && \
+    cp -R source/mesmerize-core /media/mesmerize-core && \
+    fix-permissions /media/mesmerize-core && \
+    cp -R source/fastplotlib /media/fastplotlib && \
+    fix-permissions /media/fastplotlib
 RUN ["chmod", "+x", "/media/link_package_files.sh"]
+
 
 # Make sure to switch back to user (avoid running ui containers as root)
 USER $NB_UID

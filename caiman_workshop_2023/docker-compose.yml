@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  jlab_caiman-workshop23:
+    image: wanglabneuro/jlab_caiman-workshop23:latest
+    build: .
+    container_name: jupyterlab-caiman-workshop23
+    environment:
+      XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR
+    network_mode: host
+    volumes:
+      # - /tmp/.X11-unix:/tmp.X11-unix
+      - $XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR
+    ports:
+      - "8888:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # restart: on-failure

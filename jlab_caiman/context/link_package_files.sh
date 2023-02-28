@@ -6,15 +6,15 @@ WORK_DIRECTORY="/home/jovyan"
 files=$(shopt -s nullglob dotglob; echo /media/*)
 if (( ${#files} )); then
   #Create target folder if needed
-  PACKAGE_DIRECTORY=$WORK_DIRECTORY/Packages
-  if [ ! -d "$PACKAGE_DIRECTORY" ]; then
-    mkdir -p $PACKAGE_DIRECTORY
+  RESOURCES_DIRECTORY=$WORK_DIRECTORY/Resources
+  if [ ! -d "$RESOURCES_DIRECTORY" ]; then
+    mkdir -p $RESOURCES_DIRECTORY
   fi
   #Then link files
   for d in /media/*/ ; do
     [ -L "${d%/}" ] && continue
     echo "linking $d to home directory"
-    ln -s $d $PACKAGE_DIRECTORY
+    ln -s $d $RESOURCES_DIRECTORY
   done
 else 
   echo "Media directory is empty"
