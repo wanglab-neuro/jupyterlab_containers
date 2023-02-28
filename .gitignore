@@ -132,3 +132,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 caiman_workshop_2023/issues.md
+caiman_workshop_2023/scripts/tests
