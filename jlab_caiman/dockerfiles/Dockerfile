@@ -49,6 +49,7 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -y -n caiman -c conda-forge mesmerize-core
 # caiman is a dependency of mesmerize-core
 SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
+RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 ipywidgets<8.0.0 jupyter-rfb==0.3.2  
 RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
 RUN caimanmanager.py install
 RUN pip install fastplotlib
