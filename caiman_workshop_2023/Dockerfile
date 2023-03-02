@@ -10,8 +10,10 @@ WORKDIR /home/$NB_USER/workshop
 
 USER $NB_UID
 
+# Need to set XDG_RUNTIME_DIR first if it doesn't exist (e.g., not set by default on WSL), and mount it as `-v $XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR` or define it like, `-e XDG_RUNTIME_DIR=/tmp -v $XDG_RUNTIME_DIR:/tmp`
 
-# Run with: 
-# docker run --rm -it --gpus all -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR -p 8888:8888/tcp wanglabneuro/jlab_caiman-workshop23:latest
+# Then run with: 
+# docker run --rm -it --gpus all \
+# -e XDG_RUNTIME_DIR=/tmp -v $XDG_RUNTIME_DIR:/tmp \
+# -p 127.0.0.1:1234:8888/tcp wanglabneuro/jlab_caiman-workshop23:latest
 
-# -v $XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR
