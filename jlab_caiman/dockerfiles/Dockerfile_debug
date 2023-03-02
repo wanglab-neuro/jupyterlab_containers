@@ -1,4 +1,4 @@
-FROM jupyter/tensorflow-notebook:hub-3.1.1
+FROM jupyter/tensorflow-notebook:lab-3.1.18 works - try lab-3.5.3
 
 LABEL maintainer="Vincent Prevosto <prevosto@mit.edu>"
 
@@ -30,11 +30,11 @@ USER $NB_UID
 
 # Conda installs
 # update Anaconda and install pip and bokeh
-RUN conda update -y conda 
-RUN conda install -y pip bokeh
+# RUN conda update -y conda 
+# RUN conda install -y pip bokeh
 
-RUN conda install -y -c conda-forge \
-    jupyterlab
+# RUN conda install -y -c conda-forge \
+    # jupyterlab
     # jupyterlab-git \
     # nb_conda_kernels \
     # jupyter_contrib_nbextensions    
@@ -46,21 +46,41 @@ RUN conda install -y -c conda-forge \
 #     jupyterlab_execute_time && \
 #     conda clean -tipy
 
-RUN mamba create -y -n caiman -c conda-forge mesmerize-core
+# COPY host_mescore_specs.txt host_mescore_specs.txt
+# RUN mamba create -y -n caiman --file host_mescore_specs.txt
+
+# RUN mamba create -y -n caiman -c conda-forge mesmerize-core
 # caiman is a dependency of mesmerize-core
+
+ARG pythonversion=3.9 
+#3.10
+# ARG labversion=3.1 should be fine not that image is changed to lab-3.1.18
+# 3.6
+ARG ipywidgetsversion=7.6.5
+
+# RUN conda install jupyterlab=$labversion  -y -c conda-forge --override-channels -c main
+
+RUN mamba create -y -n caiman python=$pythonversion
 SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
-# RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 "ipywidgets<8" jupyter-rfb==0.3.2  
+
+RUN conda install ipywidgets=$ipywidgetsversion -c conda-forge -y --override-channels -c main
+
+
+# RUN conda install -y -c conda-forge mesmerize-core
+
+# # RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 ipywidgets==7.6.5 jupyter-rfb==0.3.2  
 RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
-RUN caimanmanager.py install
-RUN pip install fastplotlib simplejpeg
-# RUN pip install ipywidgets jupyterlab-widgets jupyter_rfb fastplotlib
+
+# RUN caimanmanager.py install
+# RUN pip install fastplotlib simplejpeg
+# # RUN pip install ipywidgets jupyterlab-widgets jupyter_rfb fastplotlib
 
 WORKDIR /home/$NB_USER
 # Clone source repos 
-RUN mkdir source && cd source && \
-git clone https://github.com/flatironinstitute/CaImAn.git && \
-git clone https://github.com/nel-lab/mesmerize-core.git && \
-git clone https://github.com/kushalkolar/fastplotlib.git
+# RUN mkdir source && cd source && \
+# git clone https://github.com/flatironinstitute/CaImAn.git && \
+# git clone https://github.com/nel-lab/mesmerize-core.git && \
+# git clone https://github.com/kushalkolar/fastplotlib.git
 
 # # The section below is a workaround to make those directories available 
 # # to jupyterhub users, in the case where they do not control 
@@ -76,7 +96,8 @@ git clone https://github.com/kushalkolar/fastplotlib.git
 #     fix-permissions /media/fastplotlib
 # RUN ["chmod", "+x", "/media/link_package_files.sh"]
 
-
+RUN mkdir -p /tmp/xdgr
+ENV XDG_RUNTIME_DIR /tmp/xdgr
 # # Make sure to switch back to user (avoid running ui containers as root)
 # USER $NB_UID
 
