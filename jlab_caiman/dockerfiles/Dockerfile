@@ -1,4 +1,4 @@
-FROM jupyter/tensorflow-notebook:hub-2.3.1
+FROM jupyter/tensorflow-notebook:hub-3.1.1
 
 LABEL maintainer="Vincent Prevosto <prevosto@mit.edu>"
 
@@ -35,9 +35,10 @@ RUN conda install -y pip bokeh
 
 RUN conda config --set channel_priority flexible && \
     conda install -y -c conda-forge \
+    jupyterlab \
+    jupyterlab-git \
     nb_conda_kernels \
-    jupyter_contrib_nbextensions \
-    jupyterlab-git
+    jupyter_contrib_nbextensions    
 
 RUN conda config --set channel_priority strict && \
     conda install -y -c conda-forge \
@@ -49,10 +50,10 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -y -n caiman -c conda-forge mesmerize-core
 # caiman is a dependency of mesmerize-core
 SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
-RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 ipywidgets<8.0.0 jupyter-rfb==0.3.2  
+# RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 "ipywidgets<8" jupyter-rfb==0.3.2  
 RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
 RUN caimanmanager.py install
-RUN pip install fastplotlib
+RUN pip install ipywidgets jupyterlab-widgets jupyter_rfb fastplotlib
 
 WORKDIR /home/$NB_USER
 # Clone source repos 
