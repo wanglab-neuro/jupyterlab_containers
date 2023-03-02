@@ -28,6 +28,9 @@ RUN usermod -aG jhub_users ${NB_USER}
 #Switch to user
 USER $NB_UID
 
+RUN mkdir -p /tmp/xdgr
+ENV XDG_RUNTIME_DIR /tmp/xdgr
+
 # Conda installs
 # update Anaconda and install pip and bokeh
 RUN conda update -y conda 
@@ -35,25 +38,25 @@ RUN conda install -y pip bokeh
 
 RUN conda config --set channel_priority flexible && \
     conda install -y -c conda-forge \
-    jupyterlab \
     jupyterlab-git \
     nb_conda_kernels \
-    jupyter_contrib_nbextensions    
-
-RUN conda config --set channel_priority strict && \
-    conda install -y -c conda-forge \
+    jupyter_contrib_nbextensions \    
+# 
+# RUN conda config --set channel_priority strict && \
+#     conda install -y -c conda-forge \
     jupyterlab-nvdashboard \
     pynvml \
     jupyterlab_execute_time && \
     conda clean -tipy
 
-RUN mamba create -y -n caiman -c conda-forge mesmerize-core
-# caiman is a dependency of mesmerize-core
-SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
-# RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 "ipywidgets<8" jupyter-rfb==0.3.2  
-RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
+# RUN mamba create -y -n caiman -c conda-forge mesmerize-core
+# # caiman is a dependency of mesmerize-core
+# SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
+# RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
+RUN pip install fastplotlib simplejpeg
+RUN conda install -y -c conda-forge mesmerize-core
 RUN caimanmanager.py install
-RUN pip install ipywidgets jupyterlab-widgets jupyter_rfb fastplotlib
+
 
 WORKDIR /home/$NB_USER
 # Clone source repos 
@@ -75,7 +78,6 @@ RUN cp -R caiman_data /media/caiman_data && \
     cp -R source/fastplotlib /media/fastplotlib && \
     fix-permissions /media/fastplotlib
 RUN ["chmod", "+x", "/media/link_package_files.sh"]
-
 
 # Make sure to switch back to user (avoid running ui containers as root)
 USER $NB_UID

@@ -1,4 +1,10 @@
-FROM jupyter/tensorflow-notebook:lab-3.1.18 works - try lab-3.5.3
+ARG labversion=3.5.3
+FROM jupyter/tensorflow-notebook:lab-$labversion
+
+# lab-3.1.18 (jupyterlab 3.1 in base) works with python 3.9 + ipywidgets 7.6.5 installed in caiman env with `conda install ipywidgets=$ipywidgetsversion -c conda-forge -y --override-channels -c main`
+# lab-3.5.3 should work with python 3.9 + ipywidgets 7.6.5 but doesn't
+# try lab-3.4.8
+
 
 LABEL maintainer="Vincent Prevosto <prevosto@mit.edu>"
 
@@ -30,8 +36,8 @@ USER $NB_UID
 
 # Conda installs
 # update Anaconda and install pip and bokeh
-# RUN conda update -y conda 
-# RUN conda install -y pip bokeh
+RUN conda update -y conda 
+RUN conda install -y pip bokeh
 
 # RUN conda install -y -c conda-forge \
     # jupyterlab
@@ -52,35 +58,35 @@ USER $NB_UID
 # RUN mamba create -y -n caiman -c conda-forge mesmerize-core
 # caiman is a dependency of mesmerize-core
 
+ARG labversion=3.5.3
+# 3.1.18
+# 3.6
 ARG pythonversion=3.9 
 #3.10
-# ARG labversion=3.1 should be fine not that image is changed to lab-3.1.18
-# 3.6
 ARG ipywidgetsversion=7.6.5
 
 # RUN conda install jupyterlab=$labversion  -y -c conda-forge --override-channels -c main
 
-RUN mamba create -y -n caiman python=$pythonversion
-SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
+# RUN mamba create -y -n caiman python=$pythonversion
 
-RUN conda install ipywidgets=$ipywidgetsversion -c conda-forge -y --override-channels -c main
-
-
-# RUN conda install -y -c conda-forge mesmerize-core
-
+# SHELL ["conda","run","-n","caiman","/bin/bash","-c"]
+# RUN conda install ipywidgets=$ipywidgetsversion -c conda-forge -y --override-channels -c main
 # # RUN conda install -y -c conda-forge jupyterlab_widgets==1.1.1 ipywidgets==7.6.5 jupyter-rfb==0.3.2  
-RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
+# RUN python -m ipykernel install --user --name caiman --display-name "CaImAn"
 
+# RUN echo "jupyterlab==${labversion}" >> $CONDA_PREFIX/conda-meta/pinned
+RUN pip install fastplotlib
+RUN conda install -y -c conda-forge mesmerize-core
 # RUN caimanmanager.py install
 # RUN pip install fastplotlib simplejpeg
 # # RUN pip install ipywidgets jupyterlab-widgets jupyter_rfb fastplotlib
 
 WORKDIR /home/$NB_USER
 # Clone source repos 
-# RUN mkdir source && cd source && \
-# git clone https://github.com/flatironinstitute/CaImAn.git && \
-# git clone https://github.com/nel-lab/mesmerize-core.git && \
-# git clone https://github.com/kushalkolar/fastplotlib.git
+RUN mkdir source && cd source && \
+git clone https://github.com/flatironinstitute/CaImAn.git && \
+git clone https://github.com/nel-lab/mesmerize-core.git && \
+git clone https://github.com/kushalkolar/fastplotlib.git
 
 # # The section below is a workaround to make those directories available 
 # # to jupyterhub users, in the case where they do not control 
