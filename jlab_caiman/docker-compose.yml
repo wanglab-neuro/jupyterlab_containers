@@ -3,7 +3,9 @@ version: '3'
 services:
   jlab_caiman-workshop23:
     image: wanglabneuro/jlab_caiman:latest
-    build: .
+    build: 
+      context: ./context
+      dockerfile: ./dockerfiles/Dockerfile
     container_name: jupyterlab-caiman
     # environment:
     #   XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR
