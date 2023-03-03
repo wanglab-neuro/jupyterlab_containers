@@ -1,6 +1,7 @@
 # test directories
 jlab_test/
 jlab_dlc/
+tests/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
