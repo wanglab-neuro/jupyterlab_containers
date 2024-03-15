@@ -1,5 +1,7 @@
 Container for running the [minian](https://github.com/denisecailab/minian) pipeline.  
 Instruction to use the pipeline are found in the [minian documentation](https://minian.readthedocs.io/en/stable/).  
+  
+This container's code is hosted in the [Wang lab jupyterlab containers repository](https://github.com/wanglab-neuro/jupyterlab_containers/tree/main).  
 
 ## Using the minian container
 ### Start the notebook server
