@@ -1,4 +1,7 @@
-## Use the minian container
+Container for running the [minian](https://github.com/denisecailab/minian) pipeline.  
+Instruction to use the pipeline are found in the [minian documentation](https://minian.readthedocs.io/en/stable/).  
+
+## Using the minian container
 ### Start the notebook server
   
 `docker run --rm -it --gpus all -v <data directory>:/data -p 8888:8888 wanglabneuro/jlab_minian`
