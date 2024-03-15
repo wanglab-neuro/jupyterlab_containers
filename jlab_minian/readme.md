@@ -3,15 +3,18 @@
 `docker run --rm -it --gpus all -v <data directory>:/data -p 8888:8888 wanglabneuro/jlab_minian`
 
 e.g., from a Windows terminal:  
-`docker run --rm -it --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian`
-**Some information**:
-* To preserve the container after it stops, remove the `--rm` flag.
-* To make it restart automatically, add the `--restart always` flag
-* To make it run in the background, add the `-d` flag, and remove the `-it` flag.
-* To use only GPU 1, use `--gpus device=1` instead of `--gpus all`.
-* To name the container, add the `--name` flag.
-e.g.,
-`docker run -d --restart always --gpus device=1 -v D:\Nitsan:/data -p 8888:8888 --name minian wanglabneuro/jlab_minian`
+`docker run --rm -it --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian`.  
+
+**Some information**:  
+  * To preserve the container after it stops, remove the `--rm` flag.  
+  * To preserve modification to the code, mount the code directory with the `-v` flag. This will overwrite the container's default code directory.
+  * To make it restart automatically, add the `--restart always` flag
+  * To make it run in the background, add the `-d` flag, and remove the `-it` flag.
+  * To use only GPU 1, use `--gpus device=1` instead of `--gpus all`.
+  * To name the container, add the `--name` flag.
+
+e.g.,  
+`docker run -d --restart always --gpus device=1 -v D:\Nitsan:/data -v D:\Code\minian:/home/jovyan/minian -p 8888:8888 --name minian wanglabneuro/jlab_minian`
 
 * Open the jupyter notebook server in a browser: 
 `localhost:8888\lab`, then enter the token password.  
@@ -19,11 +22,11 @@ Or log directly with the tken in the address, e.g.: `http://127.0.0.1:8888/lab?t
 
 **Note**: when starting in detached mode (`-d`), the server link with the token is not displayed.  
 To set or get the jupyter server token, there are several options:  
-    * Add the `--NotebookApp.token` flag, e.g.,  
+  * Add the `--NotebookApp.token` flag, e.g.,  
 `docker run --rm -d --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian --Notebook App.token='mytoken'`. `mytoken` is the token you want to use. You can create a random one with `openssl rand -hex 24`. 
-    * You can set the token in the `jupyter_notebook_config.py` file, and then copy it to the container with the `-v` flag. e.g.,
+  * You can set the token in the `jupyter_notebook_config.py` file, and then copy it to the container with the `-v` flag. e.g.,
 `docker run --rm -d --gpus all -v D:\Nitsan:/data -v D:\Code\jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py -p 8888:8888 wanglabneuro/jlab_minian`.  
-    * You can print the logs containing the token to the console with `docker logs <container name>`. e.g., `docker logs minian`.  
+  * You can print the logs containing the token to the console with `docker logs <container name>`. e.g., `docker logs minian`.  
 
 ## Build the container image  
-Make the script executable, then call `./build.sh`
+Make the script executable, then call `./build.sh`.   
