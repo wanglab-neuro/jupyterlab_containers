@@ -1,9 +1,12 @@
 ## Use the minian container
-* Start the notebook server  
+### Start the notebook server
+  
 `docker run --rm -it --gpus all -v <data directory>:/data -p 8888:8888 wanglabneuro/jlab_minian`
 
-e.g., from a Windows terminal:  
-`docker run --rm -it --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian`.  
+  e.g., from a Windows terminal:  
+  ```
+  docker run --rm -it --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian
+  ```  
 
 **Some information**:  
   * To preserve the container after it stops, remove the `--rm` flag.  
@@ -13,12 +16,23 @@ e.g., from a Windows terminal:
   * To use only GPU 1, use `--gpus device=1` instead of `--gpus all`.
   * To name the container, add the `--name` flag.
 
-e.g.,  
-`docker run -d --restart always --gpus device=1 -v D:\Nitsan:/data -v D:\Code\minian:/home/jovyan/minian -p 8888:8888 --name minian wanglabneuro/jlab_minian`
+  e.g., in a Windows cmd terminal:    
+  ```bash
+  docker run -d ^
+  --restart always ^
+  --gpus device=1 ^
+  -v D:\Nitsan:/data ^
+  -v D:\Code\minian:/home/jovyan/minian ^
+  -p 8888:8888 ^
+  --name minian ^
+  wanglabneuro/jlab_minian
+  ```
 
-* Open the jupyter notebook server in a browser: 
-`localhost:8888\lab`, then enter the token password.  
-Or log directly with the tken in the address, e.g.: `http://127.0.0.1:8888/lab?token=fbb78861ae6613c6514fae064815f9f45e2b27cd41b5ffd3`.  
+### Open the jupyter notebook server in a browser
+  
+Connect to `localhost:8888\lab` in a browser, then enter the token password.  
+Or log directly with the token added to the address, e.g.:  
+`http://127.0.0.1:8888/lab?token=fbb78861ae6613c6514fae064815f9f45e2b27cd41b5ffd3`.  
 
 **Note**: when starting in detached mode (`-d`), the server link with the token is not displayed.  
 To set or get the jupyter server token, there are several options:  
