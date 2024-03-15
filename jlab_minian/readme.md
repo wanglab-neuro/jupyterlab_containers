@@ -7,6 +7,12 @@ This container's code is hosted in the [Wang lab jupyterlab containers repositor
 ### Start the notebook server
   
 `docker run --rm -it --gpus all -v <data directory>:/data -p 8888:8888 wanglabneuro/jlab_minian`
+`--rm` removes the container when it stops.  
+`-it` starts the container in interactive mode.  
+`--gpus all` allows the container to use all available GPUs.  
+`-v <data directory>:/data` mounts the data directory to the container's `/data` directory.  
+`-p 8888:8888` maps the container's port 8888 to the host's port 8888.  
+`wanglabneuro/jlab_minian` is the name of the container. Docker will download it if it is not found locally. You need Docker installed and running to use this command. To install Docker, see the [Docker installation guide](https://docs.docker.com/get-docker/).  
 
   e.g., from a Windows terminal:  
   ```
