@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook:hub-2.3.1
+FROM jupyter/datascience-notebook:hub-3.1.1
 
 LABEL maintainer="Vincent Prevosto <prevosto@mit.edu>"
 

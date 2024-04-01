@@ -131,7 +131,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# directories
 caiman_workshop_2023/issues.md
 caiman_workshop_2023/scripts/tests
 caiman_workshop_2023/host_mescore_env_package_list
 jlab_caiman/context/host_mescore_specs.txt
+jlab_matlab/license/short-license-file.txt

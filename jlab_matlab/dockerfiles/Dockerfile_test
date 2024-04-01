@@ -1,24 +1,25 @@
+# FROM wanglabneuro/jlab_multi
 FROM jupyter/minimal-notebook:hub-3.1.1
 
 LABEL maintainer="Vincent Prevosto <prevosto@mit.edu>"
 
+ENV PATH="/usr/local/MATLAB/R2021b/bin:${PATH}"
 # Copy installation files
 COPY packages packages
 COPY --from=wanglabneuro/matlab_om:2021b /usr/local/MATLAB/R2021b /usr/local/MATLAB/R2021b
-ADD content /usr/share/content
-ENV PATH="/usr/local/MATLAB/R2021b/bin:${PATH}"
 
 USER root
 # APT packages
-RUN apt update && \
-    apt install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     xvfb \
-    fonts-dejavu \
     sshfs \
+    fonts-dejavu \
     tzdata \
     scilab && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
 
 RUN fix-permissions $CONDA_DIR && \
 fix-permissions /home/$NB_USER && \
@@ -30,8 +31,6 @@ RUN usermod -aG jhub_users ${NB_USER}
 
 #Switch to user
 USER $NB_UID
-
-RUN echo 'alias matlab="/usr/local/MATLAB/R2021b/bin/matlab"' >> ~/.bashrc
 
 # update Anaconda and install pip 
 RUN conda update -y conda && \
@@ -46,24 +45,24 @@ RUN conda config --set channel_priority flexible && \
     pynwb && \
     conda clean -tipy
 
-# Install Matlab integration for Jupyter
-RUN python -m pip install jupyter-matlab-proxy && \
-    jupyter labextension install @jupyterlab/server-proxy
+# Create environments
+RUN conda env create -f packages/jmatlab_env.yml 
 
-# Create Matlab kernel environment
-RUN conda env create -f packages/jmatlab_env.yml
+# Make kernels available
 SHELL ["conda","run","-n","jmatlab","/bin/bash","-c"]
-RUN conda install --quiet --yes ipykernel && \
-    python -m ipykernel install --user --name jmatlab --display-name "Matlab" && \
-    pip install -U -r packages/jmatlab_requirements.txt
-    #  && \
+RUN python -m ipykernel install --user --name jmatlab --display-name "Matlab" && pip install -U -r packages/jmatlab_requirements.txt 
 RUN cd /usr/local/MATLAB/R2021b/extern/engines/python && \
     pip install setuptools==65.7.0 && \
     pip install .
-    # python setup.py install
-    # InvalidVersion exception occurs with setuptools>=66 for this package
 
+SHELL ["conda","run","-n","base","/bin/bash","-c"]
 RUN rm -rf packages
 
-# Make sure to switch back to user (avoid running ui containers as root)
+#Switch to user
 USER $NB_UID
+
+RUN echo 'alias matlab="/usr/local/MATLAB/R2021b/bin/matlab"' >> ~/.bashrc
+
+# Install Matlab integration for Jupyter
+RUN python -m pip install jupyter-matlab-proxy 
+RUN conda install jupyter-server-proxy -c conda-forge
