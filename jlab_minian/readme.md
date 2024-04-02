@@ -48,7 +48,7 @@ Or log directly with the token added to the address, e.g.:
 **Note**: when starting in detached mode (`-d`), the server link with the token is not displayed.  
 To set or get the jupyter server token, there are several options:  
   * Add the `--NotebookApp.token` flag, e.g.,  
-`docker run --rm -d --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian --Notebook App.token='mytoken'`. `mytoken` is the token you want to use. You can create a random one with `openssl rand -hex 24`. 
+`docker run --rm -d --gpus all -v D:\Nitsan:/data -p 8888:8888 wanglabneuro/jlab_minian start-notebook.sh --NotebookApp.token='mytoken'`. `mytoken` is the token you want to use. You can create a random one with `openssl rand -hex 24`. 
   * You can set the token in the `jupyter_notebook_config.py` file, and then copy it to the container with the `-v` flag. e.g.,
 `docker run --rm -d --gpus all -v D:\Nitsan:/data -v D:\Code\jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py -p 8888:8888 wanglabneuro/jlab_minian`.  
   * You can print the logs containing the token to the console with `docker logs <container name>`. e.g., `docker logs minian`.  
