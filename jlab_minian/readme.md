@@ -54,4 +54,4 @@ To set or get the jupyter server token, there are several options:
   * You can print the logs containing the token to the console with `docker logs <container name>`. e.g., `docker logs minian`.  
 
 ## Build the container image  
-Make the script executable, then call `./build.sh`.   
+Make the script executable, then call `./build.sh`.

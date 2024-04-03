@@ -14,6 +14,14 @@ RUN apt update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+#  Add $NB_USER to user group that we fix permissions for
+RUN usermod -aG users $NB_USER
+
+# Set $CONDA_DIR to the location of the conda installation
+#  Find the location of the conda installation
+RUN CONDA_DIR=$(conda info --base) && \
+    echo "CONDA_DIR=$CONDA_DIR" >> /etc/environment
+
 RUN fix-permissions $CONDA_DIR && \
 fix-permissions /home/$NB_USER
 
@@ -26,12 +34,15 @@ RUN conda update -y conda && \
 WORKDIR /srv
 RUN git clone https://github.com/denisecailab/minian.git
 RUN fix-permissions /srv/minian
-USER $NB_UID
+# USER $NB_UID
 WORKDIR /srv/minian
+# Copy the environment.yml file to the container. Comment that line if minian repo updates their environment.yml file
+COPY packages/environment.yml /srv/minian/environment.yml
 RUN conda env create -f environment.yml
 
 SHELL ["conda","run","-n","minian","/bin/bash","-c"]
-RUN conda install -y -c conda-forge minian
+# RUN conda install -y -c conda-forge minian
+RUN pip install -e .
 RUN minian-install --notebooks && \
     minian-install --demo
 RUN conda install -y -c conda-forge ipykernel && \
@@ -42,7 +53,7 @@ RUN conda install -y -c conda-forge ipykernel && \
 USER root
 RUN mkdir /data && \
     fix-permissions /data
-USER $NB_UID
+# USER $NB_UID
 # soft link /data to /home/jovyan/data
 RUN ln -s /data /home/$NB_USER/data
 # soft link /srv/minian to /home/jovyan/minian

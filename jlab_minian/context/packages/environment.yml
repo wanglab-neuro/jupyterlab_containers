@@ -1,0 +1,46 @@
+#  Install the minian environment using conda: conda env create -f environment.yml
+name: minian
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  # - conda-forge::minian. That version requires python >=3.8,<3.9.0a0. Not good.
+  - bokeh
+  - cvxpy
+  - dask
+  - datashader
+  - distributed
+  - ecos
+  - ffmpeg
+  - ffmpeg-python
+  - fftw
+  - holoviews
+  - jupyter
+  - matplotlib-base
+  - natsort
+  - netcdf4
+  - networkx
+  - numba
+  - numpy
+  - opencv
+  - pandas
+  - panel
+  - param
+  - pyfftw
+  - scikit-image
+  - scikit-learn
+  - scipy
+  - scs
+  - simpleitk
+  - sk-video
+  - statsmodels
+  - tifffile
+  - xarray
+  - zarr
+  - sparse
+  - pymetis
+  - rechunker
+  - medpy
+  - jinja2
