@@ -34,7 +34,7 @@ RUN conda update -y conda && \
 WORKDIR /srv
 RUN git clone https://github.com/denisecailab/minian.git
 RUN fix-permissions /srv/minian
-# USER $NB_UID
+USER $NB_UID
 WORKDIR /srv/minian
 # Copy the environment.yml file to the container. Comment that line if minian repo updates their environment.yml file
 COPY packages/environment.yml /srv/minian/environment.yml
