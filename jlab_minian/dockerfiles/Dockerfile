@@ -8,6 +8,7 @@ USER root
 # APT packages
 RUN apt update && \
     apt install -y --no-install-recommends \
+    libegl1-mesa libgl1-mesa-glx libgl1-mesa-dev \
     sshfs \
     nano \
     fonts-dejavu && \
@@ -42,6 +43,7 @@ RUN conda env create -f environment.yml
 
 SHELL ["conda","run","-n","minian","/bin/bash","-c"]
 # RUN conda install -y -c conda-forge minian
+COPY packages/requirements-base.txt /srv/minian/requirements/requirements-base.txt
 RUN pip install -e .
 RUN minian-install --notebooks && \
     minian-install --demo
