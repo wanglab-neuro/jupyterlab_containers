@@ -33,7 +33,10 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN echo "CONDA_DIR=$CONDA_DIR" >> /etc/environment
 
 RUN conda update conda && \
-    conda install conda-build
+    conda install conda-build && \
+    # The jupyter server needs to start with the proper version of pyviz_comms to avoid the frame display issue (see https://github.com/denisecailab/minian/issues/263). 
+    # It's worth installing it here to avoid that issue, unless the minian environment is activated (= set as default environment in the container) 
+    conda install -y -c conda-forge pyviz_comms=2.2.1
 
 # Fix dangling symlinks in $CONDA_DIR and /home/$NB_USER, then fix permissions
 RUN find $CONDA_DIR -xtype l -delete && \
@@ -75,14 +78,18 @@ RUN minian-install --notebooks && \
     minian-install --demo
 
 # Install jupyterlab and set up the kernel
-RUN conda install -y -c conda-forge ipykernel jupyterlab && \
+RUN conda install -y -c conda-forge ipykernel jupyterlab pyviz_comms=2.2.1 && \
     python -m ipykernel install --user --name minian --display-name "Minian" && \
+    # -c pyviz 
     conda clean -tipy
 
 # Make dir /data and fix permissions
 USER root
 RUN mkdir /data && \
     fix-permissions /data
+# Also change the owner of /srv/minian/dask-worker-space
+# RUN chown -R jovyan:users /srv/minian/dask-worker-space
+
 # USER $NB_UID
 # soft link /data to /home/jovyan/data
 RUN ln -s /data /home/$NB_USER/data
